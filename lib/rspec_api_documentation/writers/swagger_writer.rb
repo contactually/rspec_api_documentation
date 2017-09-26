@@ -6,7 +6,7 @@ module RspecApiDocumentation
     class SwaggerWriter < Writer
       FILENAME = 'swagger'
 
-      delegate :docs_dir, :swagger_config_path, to: :configuration
+      delegate :docs_dir, :swagger_config_dir, to: :configuration
 
       def write
         File.open(docs_dir.join("#{FILENAME}.json"), 'w+') do |f|
@@ -15,7 +15,8 @@ module RspecApiDocumentation
       end
 
       def load_config
-        YAML.load_file(swagger_config_path) if File.exist?(swagger_config_path)
+        return JSON.parse(File.read("#{swagger_config_dir}/swagger.json")) if File.exist?("#{swagger_config_dir}/swagger.json")
+        YAML.load_file("#{swagger_config_dir}/swagger.yml") if File.exist?("#{swagger_config_dir}/swagger.yml")
       end
     end
 

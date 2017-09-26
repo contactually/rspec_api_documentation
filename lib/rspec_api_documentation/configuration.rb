@@ -52,11 +52,11 @@ module RspecApiDocumentation
     end
 
 
-    add_setting :swagger_config_path, :default => lambda { |config|
+    add_setting :swagger_config_dir, :default => lambda { |config|
       if defined?(Rails)
-        Rails.root.join("config", "swagger.yml")
+        Rails.root.join("config")
       else
-        Pathname.new("config/swagger.yml")
+        Pathname.new("config")
       end
     }
 

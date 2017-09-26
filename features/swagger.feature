@@ -56,44 +56,63 @@ Feature: Generate API Swagger documentation from test examples
         end
       end
       """
-    And   a file named "swagger.yml" with:
+    And   a file named "swagger.json" with:
       """
-      swagger: '2.0'
-      info:
-        title: Swagger Test App
-        description: This is a sample of swagger API.
-        termsOfService: 'http://swagger.io/terms/'
-        contact:
-          name: API Support
-          url: 'http://www.swagger.io/support'
-          email: support@swagger.io
-        license:
-          name: Apache 2.0
-          url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-        version: 1.0.1
-      host: 'localhost:3000'
-      schemes:
-        - http
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      tags:
-        - name: Orders
-          description: Order's tag description
-      paths:
-        /should_be_hided:
-          hide: true
-        /not_hided:
-          hide: false
-          get:
-            hide: true
-        /instructions:
-          get:
-            description: This description came from config.yml 1
-        /orders:
-          post:
-            description: This description came from config.yml 2
+      {
+        "swagger": "2.0",
+        "info": {
+          "title": "Swagger Test App",
+          "description": "This is a sample of swagger API.",
+          "termsOfService": "http://swagger.io/terms/",
+          "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+          },
+          "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+          },
+          "version": "1.0.1"
+        },
+        "host": "localhost:3000",
+        "schemes": [
+          "http"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          {
+            "name": "Orders",
+            "description": "Order's tag description"
+          }
+        ],
+        "paths": {
+          "/should_be_hided": {
+            "hide": true
+          },
+          "/not_hided": {
+            "hide": false,
+            "get": {
+              "hide": true
+            }
+          },
+          "/instructions": {
+            "get": {
+              "description": "This description came from config.yml 1"
+            }
+          },
+          "/orders": {
+            "post": {
+              "description": "This description came from config.yml 2"
+            }
+          }
+        }
+      }
       """
     And   a file named "app_spec.rb" with:
       """
@@ -104,7 +123,7 @@ Feature: Generate API Swagger documentation from test examples
         config.app = App
         config.api_name = "Example API"
         config.format = :swagger
-        config.swagger_config_path = "swagger.yml"
+        config.swagger_config_dir = "."
         config.request_body_formatter = :json
         config.request_headers_to_include = %w[Content-Type Host]
         config.response_headers_to_include = %w[Content-Type Content-Length]

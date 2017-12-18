@@ -139,8 +139,8 @@ Feature: Generate API Swagger documentation from test examples
           parameter :one_level_array, type: :array, items: {type: :string}
           parameter :two_level_array, type: :array, items: {type: :array, items: {type: :string}}
 
-          parameter :one_level_arr
-          parameter :two_level_arr
+          parameter :one_level_arr, with_example: true
+          parameter :two_level_arr, with_example: true
 
           let(:one_level_arr) { ['value1', 'value2'] }
           let(:two_level_arr) { [[5.1, 3.0], [1.0, 4.5]] }
@@ -156,10 +156,10 @@ Feature: Generate API Swagger documentation from test examples
 
           header "Content-Type", "application/json"
 
-          parameter :name, scope: :data
-          parameter :description, scope: :data
-          parameter :amount, scope: :data
-          parameter :values, scope: :data
+          parameter :name, scope: :data, with_example: true
+          parameter :description, scope: :data, with_example: true
+          parameter :amount, scope: :data, with_example: true
+          parameter :values, scope: :data, with_example: true
 
           example 'Creating an order' do
             request = {
@@ -190,9 +190,9 @@ Feature: Generate API Swagger documentation from test examples
         put '/orders/:id' do
           route_summary "This is used to update orders."
 
-          parameter :name, 'The order name', required: true, scope: :data
-          parameter :amount, required: false, scope: :data
-          parameter :description, 'The order description', required: false, scope: :data
+          parameter :name, 'The order name', required: true, scope: :data, with_example: true
+          parameter :amount, required: false, scope: :data, with_example: true
+          parameter :description, 'The order description', required: false, scope: :data, with_example: true
 
           header "Content-Type", "application/json"
 
@@ -417,7 +417,7 @@ Feature: Generate API Swagger documentation from test examples
               {
                 "name": "one_level_arr",
                 "in": "query",
-                "description": " one level arr",
+                "description": " one level arr\nEg, `[\"value1\", \"value2\"]`",
                 "required": false,
                 "type": "array",
                 "items": {
@@ -427,7 +427,7 @@ Feature: Generate API Swagger documentation from test examples
               {
                 "name": "two_level_arr",
                 "in": "query",
-                "description": " two level arr",
+                "description": " two level arr\nEg, `[[5.1, 3.0], [1.0, 4.5]]`",
                 "required": false,
                 "type": "array",
                 "items": {
@@ -509,16 +509,23 @@ Feature: Generate API Swagger documentation from test examples
                       "type": "object",
                       "properties": {
                         "name": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "Order 1"
                         },
                         "description": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "A description"
                         },
                         "amount": {
-                          "type": "number"
+                          "type": "number",
+                          "example": 100.0
                         },
                         "values": {
                           "type": "array",
+                          "example": [
+                            5.0,
+                            1.0
+                          ],
                           "items": {
                             "type": "number"
                           }
@@ -659,13 +666,16 @@ Feature: Generate API Swagger documentation from test examples
                       "type": "object",
                       "properties": {
                         "name": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "order"
                         },
                         "amount": {
-                          "type": "integer"
+                          "type": "integer",
+                          "example": 1
                         },
                         "description": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "fast order"
                         }
                       },
                       "required": [

@@ -134,6 +134,7 @@ module RspecApiDocumentation
             end
           end
           current[:properties][field[:name]] = {type: field[:type] || Swaggers::Helper.extract_type(field[:value])}
+          current[:properties][field[:name]][:example] = field[:value] if field[:value] && field[:with_example]
 
           if current[:properties][field[:name]][:type] == :array
             current[:properties][field[:name]][:items] = field[:items] || Swaggers::Helper.extract_items(field[:value][0])
@@ -161,7 +162,9 @@ module RspecApiDocumentation
               in: :query,
               description: parameter[:description],
               required: parameter[:required],
-              type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value])
+              type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value]),
+              value: parameter[:value],
+              with_example: parameter[:with_example],
             )
             elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0]) if elem.type == :array
             result << elem
@@ -182,7 +185,9 @@ module RspecApiDocumentation
               in: :formData,
               description: parameter[:description],
               required: parameter[:required],
-              type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value])
+              type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value]),
+              value: parameter[:value],
+              with_example: parameter[:with_example],
             )
             elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0]) if elem.type == :array
             result << elem
@@ -201,7 +206,9 @@ module RspecApiDocumentation
             in: parameter[:in],
             description: parameter[:description],
             required: parameter[:required],
-            type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value])
+            type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value]),
+            value: parameter[:value],
+            with_example: parameter[:with_example],
           )
           elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0]) if elem.type == :array
           result << elem

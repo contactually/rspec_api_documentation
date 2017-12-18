@@ -10,7 +10,7 @@ resource "Orders" do
 
   get "/orders" do
     authentication :apiKey, "API_TOKEN", :in => :header, :name => "AUTH_TOKEN"
-    parameter :page, "Current page of orders"
+    parameter :page, "Current page of orders", with_example: true
 
     let(:page) { 1 }
 
@@ -36,10 +36,10 @@ resource "Orders" do
 
   post "/orders" do
     with_options :scope => :order do
-      parameter :name, "Name of order", :required => true
-      parameter :paid, "If the order has been paid for", :required => true
-      parameter :email, "Email of user that placed the order"
-      parameter :data, "Array of string", :type => :array, :items => {:type => :string}
+      parameter :name, "Name of order", :required => true, with_example: true
+      parameter :paid, "If the order has been paid for", :required => true, with_example: true
+      parameter :email, "Email of user that placed the order", with_example: true
+      parameter :data, "Array of string", :type => :array, :items => {:type => :string}, with_example: true
     end
 
     response_field :name, "Name of order", :scope => :order, :type => :string
@@ -91,9 +91,9 @@ resource "Orders" do
 
   put "/orders/:id" do
     with_options :scope => :order do
-      parameter :name, "Name of order"
-      parameter :paid, "If the order has been paid for"
-      parameter :email, "Email of user that placed the order"
+      parameter :name, "Name of order", with_example: true
+      parameter :paid, "If the order has been paid for", with_example: true
+      parameter :email, "Email of user that placed the order", with_example: true
     end
 
     let(:id) { order.id }

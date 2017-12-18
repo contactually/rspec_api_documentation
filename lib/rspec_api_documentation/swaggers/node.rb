@@ -31,7 +31,7 @@ module RspecApiDocumentation
             self.hide = value
           elsif from_opts
             add_setting name, :value => from_opts === true ? value : from_opts.new(value)
-          else
+          elsif setting_exist?(name.to_sym)
             schema = setting_schema(name)
             converted =
               case
@@ -41,6 +41,8 @@ module RspecApiDocumentation
                 value
               end
             assign_setting(name, converted)
+          else
+            public_send("#{name}=", value) if respond_to?("#{name}=")
           end
         end
       end

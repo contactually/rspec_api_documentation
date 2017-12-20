@@ -135,9 +135,15 @@ module RspecApiDocumentation
           end
           current[:properties][field[:name]] = {type: field[:type] || Swaggers::Helper.extract_type(field[:value])}
           current[:properties][field[:name]][:example] = field[:value] if field[:value] && field[:with_example]
+          current[:properties][field[:name]][:default] = field[:default] if field[:default]
+          current[:properties][field[:name]][:description] = field[:description] if field[:description]
+
+          opts = {enum: field[:enum], minimum: field[:minimum], maximum: field[:maximum]}
 
           if current[:properties][field[:name]][:type] == :array
-            current[:properties][field[:name]][:items] = field[:items] || Swaggers::Helper.extract_items(field[:value][0])
+            current[:properties][field[:name]][:items] = field[:items] || Swaggers::Helper.extract_items(field[:value][0], opts)
+          else
+            opts.each { |k, v| current[:properties][field[:name]][k] = v if v }
           end
 
           current[:required] ||= [] << field[:name] if field[:required]
@@ -165,8 +171,15 @@ module RspecApiDocumentation
               type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value]),
               value: parameter[:value],
               with_example: parameter[:with_example],
+              default: parameter[:default],
             )
-            elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0]) if elem.type == :array
+            if elem.type == :array
+              elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0], {minimum: parameter[:minimum], maximum: parameter[:maximum], enum: parameter[:enum]})
+            else
+              elem.minimum = parameter[:minimum]
+              elem.maximum = parameter[:maximum]
+              elem.enum = parameter[:enum]
+            end
             result << elem
           end
         elsif parameters.any? { |parameter| !parameter[:scope].nil? }
@@ -188,8 +201,15 @@ module RspecApiDocumentation
               type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value]),
               value: parameter[:value],
               with_example: parameter[:with_example],
+              default: parameter[:default],
             )
-            elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0]) if elem.type == :array
+            if elem.type == :array
+              elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0], {minimum: parameter[:minimum], maximum: parameter[:maximum], enum: parameter[:enum]})
+            else
+              elem.minimum = parameter[:minimum]
+              elem.maximum = parameter[:maximum]
+              elem.enum = parameter[:enum]
+            end
             result << elem
           end
         end
@@ -209,8 +229,15 @@ module RspecApiDocumentation
             type: parameter[:type] || Swaggers::Helper.extract_type(parameter[:value]),
             value: parameter[:value],
             with_example: parameter[:with_example],
+            default: parameter[:default]
           )
-          elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0]) if elem.type == :array
+          if elem.type == :array
+            elem.items = parameter[:items] || Swaggers::Helper.extract_items(parameter[:value][0], {minimum: parameter[:minimum], maximum: parameter[:maximum], enum: parameter[:enum]})
+          else
+            elem.minimum = parameter[:minimum]
+            elem.maximum = parameter[:maximum]
+            elem.enum = parameter[:enum]
+          end
           result << elem
         end
 

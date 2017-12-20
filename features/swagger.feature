@@ -136,7 +136,7 @@ Feature: Generate API Swagger documentation from test examples
           route_summary "This URL allows users to interact with all orders."
           route_description "Long description."
 
-          parameter :one_level_array, type: :array, items: {type: :string}
+          parameter :one_level_array, type: :array, items: {type: :string, enum: ['string1', 'string2']}, default: ['string1']
           parameter :two_level_array, type: :array, items: {type: :array, items: {type: :string}}
 
           parameter :one_level_arr, with_example: true
@@ -156,10 +156,10 @@ Feature: Generate API Swagger documentation from test examples
 
           header "Content-Type", "application/json"
 
-          parameter :name, scope: :data, with_example: true
+          parameter :name, scope: :data, with_example: true, default: 'name'
           parameter :description, scope: :data, with_example: true
-          parameter :amount, scope: :data, with_example: true
-          parameter :values, scope: :data, with_example: true
+          parameter :amount, scope: :data, with_example: true, minimum: 0, maximum: 100
+          parameter :values, scope: :data, with_example: true, enum: [1, 2, 3, 5]
 
           example 'Creating an order' do
             request = {
@@ -398,8 +398,15 @@ Feature: Generate API Swagger documentation from test examples
                 "required": false,
                 "type": "array",
                 "items": {
-                  "type": "string"
-                }
+                  "type": "string",
+                  "enum": [
+                    "string1",
+                    "string2"
+                  ]
+                },
+                "default": [
+                  "string1"
+                ]
               },
               {
                 "name": "two_level_array",
@@ -510,15 +517,21 @@ Feature: Generate API Swagger documentation from test examples
                       "properties": {
                         "name": {
                           "type": "string",
-                          "example": "Order 1"
+                          "example": "Order 1",
+                          "default": "name",
+                          "description": "Data name"
                         },
                         "description": {
                           "type": "string",
-                          "example": "A description"
+                          "example": "A description",
+                          "description": "Data description"
                         },
                         "amount": {
                           "type": "number",
-                          "example": 100.0
+                          "example": 100.0,
+                          "description": "Data amount",
+                          "minimum": 0,
+                          "maximum": 100
                         },
                         "values": {
                           "type": "array",
@@ -526,8 +539,15 @@ Feature: Generate API Swagger documentation from test examples
                             5.0,
                             1.0
                           ],
+                          "description": "Data values",
                           "items": {
-                            "type": "number"
+                            "type": "number",
+                            "enum": [
+                              1,
+                              2,
+                              3,
+                              5
+                            ]
                           }
                         }
                       }
@@ -667,15 +687,18 @@ Feature: Generate API Swagger documentation from test examples
                       "properties": {
                         "name": {
                           "type": "string",
-                          "example": "order"
+                          "example": "order",
+                          "description": "The order name"
                         },
                         "amount": {
                           "type": "integer",
-                          "example": 1
+                          "example": 1,
+                          "description": "Data amount"
                         },
                         "description": {
                           "type": "string",
-                          "example": "fast order"
+                          "example": "fast order",
+                          "description": "The order description"
                         }
                       },
                       "required": [

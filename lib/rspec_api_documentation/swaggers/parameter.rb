@@ -12,6 +12,10 @@ module RspecApiDocumentation
       add_setting :type
       add_setting :format
       add_setting :items
+      add_setting :default
+      add_setting :minimum
+      add_setting :maximum
+      add_setting :enum
 
       def description_with_example
         str = description_without_example.dup || ''

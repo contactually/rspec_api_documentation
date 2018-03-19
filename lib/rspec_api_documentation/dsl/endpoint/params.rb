@@ -27,6 +27,9 @@ module RspecApiDocumentation
             unless p[:value]
               cur = extra_params
               [*p[:scope]].each { |scope| cur = cur && (cur[scope.to_sym] || cur[scope.to_s]) }
+
+              return if cur.is_a?(Array)
+              
               p[:value] = cur && (cur[p[:name].to_s] || cur[p[:name].to_sym])
             end
             p
